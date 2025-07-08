@@ -1,25 +1,21 @@
-import { Routes, Route } from 'react-router-dom'
-import Navigation from './components/Navigation'
-import BookList from './components/BookList'
-import BookDetail from './components/BookDetail'
-import AddBook from './components/AddBook'
-import MyBooks from './components/MyBooks'
-import './App.css'
+// src/App.jsx
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navigation from './components/Navigation';
+import BookList from './components/BookList';
+import AddBook from './components/AddBook';
+import BookDetail from './components/BookDetail';
 
 function App() {
   return (
-    <div className="App">
+    <Router>
       <Navigation />
-      <main className="container">
-        <Routes>
-          <Route path="/" element={<BookList />} />
-          <Route path="/book/:id" element={<BookDetail />} />
-          <Route path="/add-book" element={<AddBook />} />
-          <Route path="/my-books" element={<MyBooks />} />
-        </Routes>
-      </main>
-    </div>
-  )
+      <Routes>
+        <Route path="/" element={<BookList />} />
+        <Route path="/add" element={<AddBook />} />
+        <Route path="/book/:id" element={<BookDetail />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
