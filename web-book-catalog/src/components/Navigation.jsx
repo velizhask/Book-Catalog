@@ -1,4 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
+import '/src/App.css';
+import '/src/index.css';
 
 const Navigation = () => {
   const location = useLocation()

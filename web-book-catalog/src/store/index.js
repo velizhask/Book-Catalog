@@ -1,10 +1,8 @@
-import { configureStore } from '@reduxjs/toolkit'
-import bookSlice from './bookSlice'
+import { configureStore } from '@reduxjs/toolkit';
+import booksReducer from './bookSlice'; // pastikan nama dan path benar
 
-export const store = configureStore({
+export default configureStore({
   reducer: {
-    books: bookSlice,
+    books: booksReducer, // pastikan ini pakai `books` bukan `book`
   },
-})
-
-export default store
+});
