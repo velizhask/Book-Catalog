@@ -1,11 +1,13 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { fetchBooks, setSearchTerm, setSelectedGenre } from '../store/bookSlice'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const BookList = () => {
   const dispatch = useDispatch()
   const { apiBooks, myBooks, status, error, searchTerm, selectedGenre } = useSelector((state) => state.books)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   useEffect(() => {
     if (status === 'idle') {
@@ -32,6 +34,37 @@ const BookList = () => {
     return uniqueGenres.sort()
   }, [allBooks])
 
+  const dropdownVariants = {
+    hidden: { opacity: 0, height: 0 },
+    visible: {
+      opacity: 1,
+      height: 'auto',
+      transition: {
+        height: { duration: 0.3 },
+        opacity: { duration: 0.2 },
+        staggerChildren: 0.05
+      }
+    },
+    exit: {
+      opacity: 0,
+      height: 0,
+      transition: {
+        height: { duration: 0.2 },
+        opacity: { duration: 0.1 }
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: { opacity: 1, y: 0 }
+  }
+
+  const handleGenreSelect = (genre) => {
+    dispatch(setSelectedGenre(genre))
+    setIsDropdownOpen(false)
+  }
+
   if (status === 'loading') {
     return <div className="loading">Loading books...</div>
   }
@@ -57,16 +90,69 @@ const BookList = () => {
             onChange={(e) => dispatch(setSearchTerm(e.target.value))}
           />
         </div>
-        <div className="filter-box">
-          <select 
-            value={selectedGenre} 
-            onChange={(e) => dispatch(setSelectedGenre(e.target.value))}
+        <div className="filter-box" style={{ position: 'relative' }}>
+          <button 
+            className="custom-dropdown-btn"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            <option value="all">All Genres</option>
-            {genres.map(genre => (
-              <option key={genre} value={genre}>{genre}</option>
-            ))}
-          </select>
+            {selectedGenre === 'all' ? 'All Genres' : selectedGenre}
+            <span style={{ transform: isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>▼</span>
+          </button>
+          
+          <AnimatePresence>
+            {isDropdownOpen && (
+              <motion.div
+                variants={dropdownVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 4px)',
+                  left: 0,
+                  right: 0,
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(10px)',
+                  borderRadius: '12px',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                  zIndex: 10,
+                  overflow: 'hidden'
+                }}
+              >
+                <motion.div
+                  variants={itemVariants}
+                  onClick={() => handleGenreSelect('all')}
+                  style={{
+                    padding: '1rem',
+                    cursor: 'pointer',
+                    fontSize: '1.1rem',
+                    color: 'grey',
+                    backgroundColor: selectedGenre === 'all' ? 'rgba(102, 126, 234, 0.1)' : 'transparent'
+                  }}
+                  whileHover={{ backgroundColor: 'rgba(102, 126, 234, 0.05)' }}
+                >
+                  All Genres
+                </motion.div>
+                {genres.map(genre => (
+                  <motion.div
+                    key={genre}
+                    variants={itemVariants}
+                    onClick={() => handleGenreSelect(genre)}
+                    style={{
+                      padding: '1rem',
+                      cursor: 'pointer',
+                      fontSize: '1.1rem',
+                      color: 'grey',
+                      backgroundColor: selectedGenre === genre ? 'rgba(102, 126, 234, 0.1)' : 'transparent'
+                    }}
+                    whileHover={{ backgroundColor: 'rgba(102, 126, 234, 0.05)' }}
+                  >
+                    {genre}
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 

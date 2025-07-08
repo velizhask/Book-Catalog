@@ -39,6 +39,11 @@ body {
   padding: 0 2rem;
 }
 
+.nav-center {
+  display: flex;
+  align-items: center;
+}
+
 .nav-logo {
   font-size: 1.8rem;
   font-weight: bold;
@@ -52,6 +57,32 @@ body {
 .nav-links {
   display: flex;
   gap: 3rem;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.profile-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #667eea;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.profile-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .nav-link {
@@ -99,6 +130,7 @@ body {
   width: 100%; /* Full width */
   max-width: none; /* Remove max-width constraint */
   justify-content: flex-start; /* Changed from center to flex-start for left alignment */
+  align-items: stretch; /* Ensure both elements have same height */
 }
 
 .search-box,
@@ -106,10 +138,13 @@ body {
   flex: 1;
   min-width: 250px;
   max-width: 400px; /* Add max-width to prevent controls from being too wide */
+  display: flex;
+  align-items: stretch;
 }
 
 .search-box input,
-.filter-box select {
+.filter-box select,
+.filter-box .custom-dropdown-btn {
   width: 100%;
   padding: 1rem;
   border: none;
@@ -118,10 +153,22 @@ body {
   backdrop-filter: blur(10px);
   font-size: 1.1rem;
   color: grey;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.custom-dropdown-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s;
 }
 
 .search-box input:focus,
-.filter-box select:focus {
+.filter-box select:focus,
+.custom-dropdown-btn:focus {
   outline: none;
   background: white;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
@@ -491,12 +538,45 @@ body {
 
 .form-group input,
 .form-group select,
-.form-group textarea {
+.form-group textarea,
+.form-group .custom-dropdown-btn {
   padding: 1rem;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-size: 1.1rem;
   transition: border-color 0.3s;
+  background: white;
+  color: #333;
+}
+
+.form-group .custom-dropdown-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
+  min-height: 3.2rem;
+}
+
+.form-group .custom-dropdown-btn span {
+  margin-left: 1rem;
+  font-size: 1.1em;
+  color: #888;
+  pointer-events: none;
+}
+
+.form-group .custom-dropdown-btn:focus,
+.form-group .custom-dropdown-btn:hover {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background: #f8faff;
+}
+
+/* Optional: visually hide the default button arrow if any */
+.form-group .custom-dropdown-btn::-ms-expand {
+  display: none;
 }
 
 .form-group input:focus,

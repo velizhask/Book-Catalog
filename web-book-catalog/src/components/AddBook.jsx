@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { addBook } from '../store/bookSlice'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const AddBook = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ const AddBook = () => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [isGenreDropdownOpen, setIsGenreDropdownOpen] = useState(false)
   
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -31,6 +33,37 @@ const AddBook = () => {
       ...prev,
       [name]: value
     }))
+  }
+
+  const handleGenreSelect = (genre) => {
+    setFormData(prev => ({ ...prev, genre }))
+    setIsGenreDropdownOpen(false)
+  }
+
+  const dropdownVariants = {
+    hidden: { opacity: 0, height: 0 },
+    visible: {
+      opacity: 1,
+      height: 'auto',
+      transition: {
+        height: { duration: 0.3 },
+        opacity: { duration: 0.2 },
+        staggerChildren: 0.05
+      }
+    },
+    exit: {
+      opacity: 0,
+      height: 0,
+      transition: {
+        height: { duration: 0.2 },
+        opacity: { duration: 0.1 }
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: { opacity: 1, y: 0 }
   }
 
   const handleSubmit = async (e) => {
@@ -130,21 +163,58 @@ const AddBook = () => {
         </div>
 
         <div className="form-row">
-          <div className="form-group">
+          <div className="form-group" style={{ position: 'relative' }}>
             <label htmlFor="genre">Genre *</label>
-            <select
-              id="genre"
-              name="genre"
-              value={formData.genre}
-              onChange={handleChange}
-              required
+            <button 
+              type="button"
+              className="custom-dropdown-btn"
+              onClick={() => setIsGenreDropdownOpen(!isGenreDropdownOpen)}
               disabled={isSubmitting}
             >
-              <option value="">Select a genre...</option>
-              {genres.map(genre => (
-                <option key={genre} value={genre}>{genre}</option>
-              ))}
-            </select>
+              {formData.genre || 'Select a genre...'}
+              <span style={{ transform: isGenreDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>▼</span>
+            </button>
+            
+            <AnimatePresence>
+              {isGenreDropdownOpen && (
+                <motion.div
+                  variants={dropdownVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 4px)',
+                    left: 0,
+                    right: 0,
+                    background: 'white',
+                    border: '2px solid #e2e8f0',
+                    borderRadius: '8px',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                    zIndex: 10,
+                    overflow: 'hidden'
+                  }}
+                >
+                  {genres.map(genre => (
+                    <motion.div
+                      key={genre}
+                      variants={itemVariants}
+                      onClick={() => handleGenreSelect(genre)}
+                      style={{
+                        padding: '0.75rem 1rem',
+                        cursor: 'pointer',
+                        fontSize: '1.1rem',
+                        color: '#333',
+                        backgroundColor: formData.genre === genre ? 'rgba(102, 126, 234, 0.1)' : 'transparent'
+                      }}
+                      whileHover={{ backgroundColor: 'rgba(102, 126, 234, 0.05)' }}
+                    >
+                      {genre}
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
           
           <div className="form-group">
