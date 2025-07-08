@@ -11,7 +11,7 @@ const Navigation = () => {
     <nav className="navbar">
       <div className="nav-container">
         <Link to="/" className="nav-logo">
-          📚 Book Catalog
+          Book Catalog
         </Link>
         <div className="nav-links">
           <Link to="/" className={isActive('/')}>All Books</Link>
